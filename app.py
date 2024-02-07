@@ -1,7 +1,7 @@
 from flask import Flask,redirect, render_template,request, session ,flash ,jsonify,Response,url_for
 from datetime import datetime ,date,timedelta
 import  sqlite3,cryptocode , json 
-import pandas as pd
+
 from fawryAPIcall import call
 conn = sqlite3.connect("data.db")
 
