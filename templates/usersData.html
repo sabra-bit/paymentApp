@@ -1,0 +1,198 @@
+{% extends 'main.html' %}
+{% block content %}
+<h1>Users Data</h1>
+{% for message in get_flashed_messages() %}
+            <center id ="msg" style=" padding-bottom: 25px;" >     
+    <button class="add-btn" onclick="deleteMsg()"> {{message}} <i class="fa fa-check"></i></button>
+            </center> 
+{% endfor %} 
+
+<form action="/admin" method="POST" style=" padding-bottom: 25px;">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+  
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+    <label for="password">Password:</label>
+    <input type="Text" id="password" name="password" required>
+  
+    <label for="role">Role:</label>
+    <select id="role" name="role" required>
+      <option value="">Select a role</option>
+      <option value="admin">admin</option>
+      <option value="Merchant">Merchant</option>
+      <option value="Money Depositor">Money Depositor</option>
+      
+       
+    </select>
+    <button type="submit" class="add-btn"><i class="fa fa-plus"></i> Add User</button>
+   
+  </form>
+
+ 
+
+
+<table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>name</th>
+        <th>username</th>
+        <th>password</th>
+        <th>roll</th>
+        
+        
+       
+        <th>action</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for data in Data %}
+      <tr >
+        <td >{{loop.index}}</td>
+        <td >{{data[3]}}</td>
+        <td>{{data[1]}}</td>
+        <td>**********</td>
+        <td>{{data[4]}}</td>
+        
+        
+        
+        <td>
+        {% if data[0]== 1 %}
+        <button  class="edit-btn" onclick="checkAction('edit','{{data[0]}}','{{data[3]}}','{{data[1]}}','{{data[2]}}','{{data[4]}}')"><i class="fa fa-pencil"></i></button>
+        {% else %}
+        <button  class="delete-btn" onclick="checkAction('delete','{{data[0]}}','{{data[3]}}','{{data[1]}}','{{data[2]}}','{{data[4]}}')"><i class="fa fa-trash"></i></button>
+        <button  class="edit-btn" onclick="checkAction('edit','{{data[0]}}','{{data[3]}}','{{data[1]}}','{{data[2]}}','{{data[4]}}')"><i class="fa fa-pencil"></i></button>
+        
+        {% endif %}
+        </td>
+      </tr>
+      
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div style=" padding-left:200px; padding-top: 25px;">
+    
+    <label for="UserID">User:</label>
+    <select id="UserID" name="UserID" required>
+      <option value="">Select a User</option>
+      {% for data in Data %}
+      <option value="{{data[1]}}">{{data[1]}}</option>
+      {% endfor %}
+    </select>
+
+    <label for="userPage">Page:</label>
+    <select id="userPage" name="userPage" required>
+      <option value="">Select a page</option>
+      {% for page in Page %}
+      <option value="{{page[1]}}">{{page[2]}}</option>
+      {% endfor %}
+    </select>
+    <button  class="edit-btn" onclick="pageAction('view');" ><i class="fa fa-eye"></i> View Page</button>
+    <button  class="add-btn" onclick="pageAction('add');" ><i class="fa fa-plus"></i> Add Page</button>
+    <button  class="delete-btn" onclick="pageAction('delete');" ><i class="fa fa-trash"></i> Remove Page</button>
+   
+  </div>
+<script>
+    function pageAction(action){
+      var UserName = document.getElementById("UserID").value;
+     // var pageURL = document.getElementById("userPage").value;
+      //var pageName = document.getElementById("userPage").text;
+
+
+    var selectElement = document.getElementById("userPage");
+    var selectedOption = selectElement.options[selectElement.selectedIndex];
+    var pageName = selectedOption.text;
+    var pageURL = selectedOption.value;
+        if(UserName == ""){
+          swal("select user ");
+        }
+        else{
+          addDeleteUserPage(action,UserName,pageName,pageURL);
+        }
+
+      
+        
+    }
+
+    function  checkAction (action,id,name,email,password,role){
+      swal({
+        title: "Do you want to "+action+" that user ?",
+        text: "Once "+action+", you will not be able to recover this user!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          if(action=='delete'){
+              editeDeleteUser(action,id,name,email,password,role)
+            }else{
+                Edit(action,id,name,email,password,role);
+            }
+        } else {
+          swal("Nothing changed");
+        }
+      });
+    }
+
+    function editeDeleteUser(action,id,name,email,password,role) {
+        const data = JSON.stringify({
+          'ActionType':action,
+          'userId':id,
+          'name':name,
+          'email':email,
+          'password':password,
+          'role':role
+        })
+        const xhr = new XMLHttpRequest()
+        xhr.withCredentials = true;
+        xhr.addEventListener('readystatechange', function() {
+          if (this.readyState === this.DONE) {
+              
+              location.reload();
+          }
+        });
+        xhr.open('POST', '/editDeleteUser') ;
+        xhr.setRequestHeader('content-type', 'application/json')
+        xhr.send(data);
+      }   
+      
+      function addDeleteUserPage(action,userName,PageName,pURL) {
+        const data = JSON.stringify({
+          'ActionType':action,
+          'userName':userName,
+          'PageName':PageName,
+          'URL':pURL,
+          
+        })
+        const xhr = new XMLHttpRequest()
+        xhr.withCredentials = true;
+        xhr.addEventListener('readystatechange', function() {
+          if (this.readyState === this.DONE) {
+            swal(xhr.responseText);
+            
+          }
+        });
+        xhr.open('POST', '/editDeletePage') ;
+        xhr.setRequestHeader('content-type', 'application/json')
+        xhr.send(data);
+      } 
+      
+      
+      function Edit(action,id,name,email,password,role){
+        swal("change password:", {
+          content: "input",
+          content: "input",
+        })
+        .then((value) => {
+          
+          editeDeleteUser(action,id,name,email,value,role);
+        });
+          
+      }
+</script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock content %}

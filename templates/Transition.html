@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+{% block content %}
+<h1> Transitions </h1>
+{% for message in get_flashed_messages() %}
+            <center id ="msg" style=" padding-bottom: 25px;" >     
+    <button  class="add-btn" onclick="deleteMsg()"> {{message}} <i class="fa fa-check"></i></button>
+            </center> 
+{% endfor %} 
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">From</th>
+      <th scope="col">To</th>
+      <th scope="col">Card Number</th>
+      <th scope="col">Value</th>
+      <th scope="col">Time</th>
+    </tr>
+  </thead>
+  <tbody>
+
+      {% for data in Data %}
+    <tr>
+      <th scope="row">{{ loop.index }}</th>
+      <td>{{ data[1] }}</td>
+      <td>{{ data[2] }}</td>
+      <td>{{ data[3] }}</td>
+      <td>{{ data[6] }}</td>
+      <td>{{ data[8] [:-7] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock content %}

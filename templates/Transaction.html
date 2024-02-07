@@ -1,0 +1,72 @@
+{% extends 'app.html' %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+            <center id ="msg" style=" padding-top: 25px;" >     
+    <button class="add-btn" onclick="deleteMsg()"> {{message}} <i class="fa fa-check"></i></button>
+            </center> 
+{% endfor %} 
+
+<div class="container mt-6">
+    <br>
+    <div class="row">
+        <div class="col-md-7 offset-md-3">
+            <div id="accordion">
+            <div class="card-header" id="headingOne">
+            <h1 class="btn btn-link text-center mb-4" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">View Transactions</h1>
+        </div>
+
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+            <p class="lead text-center">Here you can view your transactions.</p>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">transactions</h5>
+                </div>
+                <div class="card-body">
+                   
+                    <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">From</th>
+                            <th scope="col">To</th>
+                            <th scope="col">Card Number</th>
+                            <th scope="col">Value</th>
+                            <th scope="col">Time</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for data in Data %}
+                          <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ data[1] }}</td>
+                            <td>{{ data[2] }}</td>
+                            <td>{{ data[3] }}</td>
+                            <td>{{ data[6] }}</td>
+                            <td>{{ data[8] [:-7] }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+</div>
+
+{% endblock content %}

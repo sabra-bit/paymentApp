@@ -1,0 +1,126 @@
+{% extends 'app.html' %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+            <center id ="msg" style=" padding-top: 25px;" >     
+    <button class="add-btn" onclick="deleteMsg()"> {{message}} <i class="fa fa-check"></i></button>
+            </center> 
+{% endfor %} 
+
+<div class="container mt-6">
+    <br>
+    <div class="row">
+        <div class="col-md-7 offset-md-3">
+            <div id="accordion">
+            <div class="card-header" id="headingOne">
+            <h1 class="btn btn-link text-center mb-4" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Hi {{name}}</h1>
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <p class="lead text-center">Here you pay by scanning QR Code.</p>
+            <div class="card">
+                <div class="card-header">
+                    <center><h5 class="card-title">{{name}} you have: {{ amount }} L.E</h5></center>
+                </div>
+                <div class="card-body">
+                   
+                    
+
+                    <center> <button type="button" class="btn btn-primary btn-lg" onclick="Scanner('{{email}}');">Scane</button></center>
+                    
+                    <div class="text-center">
+                       <br>
+                        <center><video  width="240" height="180" id="preview"></video></center>
+                        <div id ="txtData"> </div>
+                        
+                      </div>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+</div>
+<script type="text/javascript" src="{{ url_for('static',filename ='instascan.min.js') }}"></script>
+<script type="text/javascript">
+    
+    function Scanner(ChildEmail){
+    
+    
+    let scanner = new Instascan.Scanner({
+      video: document.getElementById('preview')
+    });
+    document.getElementById("txtData").innerHTML = "scan ...";
+    scanner.addListener('scan', function (content) {
+      console.log(content);
+      let decodedString = atob(content);
+      document.getElementById("txtData").innerHTML = "done";
+      document.getElementById("txtData").innerHTML += decodedString;
+      scanner.stop();
+      let ScanedData = decodedString.split("-");
+      callAPI(ChildEmail,ScanedData[1],ScanedData[0],ScanedData[2] ) ;
+      // window.location = 'http://localhost/something/data';
+        // or 
+      //location.replace("https://www.w3schools.com");
+    });
+
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        scanner.start(cameras[0]);
+      } else {
+        Swal.fire("No Camera Found !");
+        console.error('No cameras found.');
+      }
+    }).catch(function (e) {
+        Swal.fire("Error !");
+      console.error(e);
+    });
+
+
+}
+
+function callAPI(childEmail,mercent,Value,Time ) {
+
+       
+    
+
+    const data = JSON.stringify({
+        'ActionType':'PAY',
+        'mercent':mercent,
+        'childEmail':childEmail,
+        'value':Value,
+        'creationTime':Time
+        
+        
+      })
+    const xhr = new XMLHttpRequest()
+    xhr.withCredentials = true;
+    xhr.addEventListener('readystatechange', function() {
+      if (this.readyState === this.DONE) {
+          
+          location.reload();
+      }
+    });
+    xhr.open('POST', '/childuser') ;
+    xhr.setRequestHeader('content-type', 'application/json')
+    xhr.send(data);
+  }  
+
+
+  function deleteMsg(){
+    document.getElementById('msg').remove();
+  }
+  </script>
+
+{% endblock content %}

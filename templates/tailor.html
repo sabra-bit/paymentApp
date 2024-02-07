@@ -1,0 +1,107 @@
+{% extends 'app.html' %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+            <center id ="msg" style=" padding-top: 25px;" >     
+    <button class="add-btn" onclick="deleteMsg()"> {{message}} <i class="fa fa-check"></i></button>
+            </center> 
+{% endfor %} 
+
+<div class="container mt-6">
+    <br>
+    <div class="row">
+        <div class="col-md-7 offset-md-3">
+            <div id="accordion">
+            <div class="card-header" id="headingOne">
+            <h1 class="btn btn-link text-center mb-4" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Merchant Tailor</h1>
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <p class="lead text-center">Here you add money to account.</p>
+            <div class="card">
+                <div class="card-header">
+                    <center><h5 class="card-title">{{ name }}</h5></center>
+                </div>
+                <div class="card-body">
+                   
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">Transact to</span>
+                        </div>
+                        <input type="email" id = "childEmail" class="form-control" placeholder="email" aria-label="email" aria-describedby="basic-addon1">
+                      </div>
+
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">LE</span>
+                        </div>
+                        <input type="number" id = "Value" name = "Value" min="0" class="form-control" aria-label="Amount (to the nearest LE)" onkeyup="if(this.value<0){this.value= this.value * -1}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick = "callAPI('{{email}}') ;">Transfer Money</button>
+                        </div>
+
+
+                    </div>
+
+
+                    
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+</div>
+
+<script>
+
+
+    function callAPI(mercent) {
+
+       
+        var childEmail = document.getElementById("childEmail").value;
+       
+        var Value = document.getElementById("Value").value;
+
+        const data = JSON.stringify({
+            'ActionType':'PAY',
+            'mercent':mercent,
+            'childEmail':childEmail,
+            'value':Value
+            
+            
+          })
+        const xhr = new XMLHttpRequest()
+        xhr.withCredentials = true;
+        xhr.addEventListener('readystatechange', function() {
+          if (this.readyState === this.DONE) {
+              
+              location.reload();
+          }
+        });
+        xhr.open('POST', '/tailor') ;
+        xhr.setRequestHeader('content-type', 'application/json')
+        xhr.send(data);
+      }  
+
+      function deleteMsg(){
+        document.getElementById('msg').remove();
+      }
+
+
+</script>
+
+{% endblock content %}

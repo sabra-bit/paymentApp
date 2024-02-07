@@ -1,0 +1,278 @@
+{% extends 'app.html' %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+            <center id ="msg" style=" padding-top: 25px;" >     
+    <button class="add-btn" onclick="deleteMsg()"> {{message}} <i class="fa fa-check"></i></button>
+            </center> 
+{% endfor %} 
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div id="accordion">
+            <div class="card-header" id="headingOne">
+            <h1 class="btn btn-link text-center mb-4" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">Add a Child</h1>
+        </div>
+
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+            <p class="lead text-center">Here you can add your Child account.</p>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Child Information</h5>
+                </div>
+                <div class="card-body">
+                    <form id="child-form" >
+
+                        <div class="form-group">
+                            <label for="email">Parent Email:</label>
+                            <input type="email" id="Pemail" name="Pemail" class="form-control" value="{{email}}" disabled>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label for="name">Child Name:</label>
+                            <input type="text" id="Cname" name="Cname" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Child Email:</label>
+                            <input type="email" id="Cemail" name="Cemail" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Password:</label>
+                            <input type="text" id="CPassword" name="CPassword" class="form-control" required>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-block" onclick="callAPI();">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div id="accordion">
+            <div class="card-header" id="headingOne">
+            <h1 class="btn btn-link text-center mb-4" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">View a Children</h1>
+        </div>
+
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+            <p class="lead text-center">Here you can view your Child account.</p>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Child Information</h5>
+                </div>
+                <div class="card-body">
+                    
+                    {% for data in Data %}
+                    <div class="card w-50">
+                        <div class="card-body">
+                          <h5 class="card-title">Name: {{ data [3] }}</h5>
+                          <p class="card-text">Email: {{ data [2] }}</p>
+                          <p class="card-text">Password: {{ data [4] }}</p>
+                          <p class="card-text">Current Value: {{ data [5] }}</p>
+                          <a href="#" class="btn btn-primary" onclick="payMoney('{{ data [2] }}' , '{{ email}}');" >Pay</a>
+                          <a href="#" class="btn btn-primary" onclick=" ViweTransactions('{{ data [2] }}' ,'{{data [3]}}');" >View Transactions</a>
+                        </div>
+                      </div>
+
+                    {% endfor %}     
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+
+
+</div>
+<script>
+
+    async function payMoney( childAccount , parentAccount ){
+        const { value: formValues } = await Swal.fire({
+            title: "Multiple inputs",
+            html: `
+        
+
+                <div class="form-group">
+    
+                    <label for="value">Payment Value</label>
+    
+                    <input type="Number" id="value" name="value" placeholder="Payment Value"  onkeyup="if(this.value<0){this.value= this.value * -1}">
+    
+                </div>
+    
+                <div class="form-group">
+    
+                    <label for="CardNumber">Card Number</label>
+    
+                    <input type="text" id="CardNumber" name="CardNumber" placeholder="Card Number">
+    
+                </div>
+    
+                <div class="form-group">
+    
+                    <label for="expiryDate">Expiry Date</label>
+    
+                    <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY">
+    
+                </div>
+    
+                <div class="form-group">
+    
+                    <label for="cvv">CVV</label>
+    
+                    <input type="text" id="cvv" name="cvv" placeholder="CVV">
+    
+                </div>
+    
+                
+    
+          
+            `,
+            focusConfirm: false,
+            preConfirm: () => {
+              return [
+                document.getElementById("value").value,
+                document.getElementById("CardNumber").value,
+                document.getElementById("expiryDate").value,
+                document.getElementById("cvv").value
+              ];
+            }
+          });
+          if (formValues) {
+            
+            var hasEmptyString = formValues.some(element => element === "");
+            if (hasEmptyString) {
+                Swal.fire("Incomplete Data.");
+              } else {
+                
+                
+                const data = JSON.stringify({
+                    'ActionType':'PAY',
+                    'parent':parentAccount,
+                    'childEmail':childAccount,
+                    'value':formValues[0],
+                    'CardNumber':formValues[1],
+                    'ExpiryDate':formValues[2],
+                    'CVV':formValues[3]
+                    
+                  })
+                  const xhr = new XMLHttpRequest()
+                  xhr.withCredentials = true;
+                  xhr.addEventListener('readystatechange', function() {
+                    if (this.readyState === this.DONE) {
+                        
+                        location.reload();
+                    }
+                  });
+                  xhr.open('POST', '/parentAPI') ;
+                  xhr.setRequestHeader('content-type', 'application/json')
+                  xhr.send(data);
+
+
+              }
+          }
+    }
+
+
+
+
+
+    function ViweTransactions( childEmail , Name) {
+
+        
+
+        const data = JSON.stringify({
+          'ActionType':'ViewChaild',
+          
+          'childEmail':childEmail
+          
+          
+        })
+        const xhr = new XMLHttpRequest()
+        xhr.withCredentials = true;
+        xhr.addEventListener('readystatechange', function() {
+          if (this.readyState === this.DONE) {
+              
+            var msg =  xhr.responseText;
+            console.log(msg);
+
+            let data = JSON.parse(msg);
+
+            // Create an HTML table dynamically
+            let tableHTML = '<table border="1">';
+            tableHTML += '<tr><th>From</th><th>To</th><th>Card Number</th><th>Value</th><th>Time</th></tr>';
+            data.forEach(function(item) {
+            tableHTML += '<tr>';
+            tableHTML += '<td>' + item[1] + '</td>';
+            tableHTML += '<td>' + item[2] + '</td>';
+            tableHTML += '<td>' + item[3] + '</td>';
+            tableHTML += '<td>' + item[6] + '</td>';
+            tableHTML += '<td>' + item[7] + '</td>';
+            tableHTML += '</tr>';
+            });
+            tableHTML += '</table>';
+
+
+
+            Swal.fire({
+                title: Name +" Transactions",
+                html: tableHTML,
+                confirmButtonText: 'Close'
+              });
+          }
+        });
+        xhr.open('POST', '/parentAPI') ;
+        xhr.setRequestHeader('content-type', 'application/json')
+        xhr.send(data);
+      } 
+
+
+
+
+
+
+
+
+
+    function callAPI() {
+
+        var parent = document.getElementById("Pemail").value;
+        var childEmail = document.getElementById("Cemail").value;
+        var cname = document.getElementById("Cname").value;
+        var CPassword = document.getElementById("CPassword").value;
+
+        const data = JSON.stringify({
+          'ActionType':'addChild',
+          'parent':parent,
+          'childEmail':childEmail,
+          'childName':cname,
+          'childPassword':CPassword,
+          
+        })
+        const xhr = new XMLHttpRequest()
+        xhr.withCredentials = true;
+        xhr.addEventListener('readystatechange', function() {
+          if (this.readyState === this.DONE) {
+              
+              location.reload();
+          }
+        });
+        xhr.open('POST', '/parentAPI') ;
+        xhr.setRequestHeader('content-type', 'application/json')
+        xhr.send(data);
+      }  
+
+      function deleteMsg(){
+        document.getElementById('msg').remove();
+      }
+</script>
+{% endblock content %}

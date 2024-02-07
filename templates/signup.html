@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-Up Page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+
+        body {
+
+            margin-top:50px;
+ 
+             background-size: cover;
+ 
+             background-position: center;
+ 
+         }
+
+    </style>
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center mb-4">Sign Up</h1>
+                <form id="signup-form" name = "signup-form" onSubmit="return formValidation();"  form action = "/createUser" method = "POST">
+               
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" class="form-control" required>
+                    </div>
+
+
+
+                    <div class="form-check" style=" visibility: hidden" >
+                        <input class="form-check-input" type="radio" name="accounttype" value="Money Depositor" id="flexRadioDefault1" checked>
+                        <label class="form-check-label" for="accounttype">
+                          Money Depositor
+                        </label>
+                      </div>
+                      <div class="form-check" style=" visibility: hidden" >
+                        <input class="form-check-input" type="radio" name="accounttype" value="Merchant" id="flexRadioDefault2" >
+                        <label class="form-check-label" for="accounttype">
+                            Merchant
+                        </label>
+                      </div>
+
+
+
+                      <br>
+
+                    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                </form>
+                {% for message in get_flashed_messages() %}
+
+                <div style="margin:50px;"   onclick="deleteMsg()"  id="error-message" > 
+               
+                <p style = "color:red;"  class="text-center mt-4 hidden"> {{message}} <i class="fa fa-check"></i> </p>  
+               
+                </div>
+                {% endfor %}
+                <p class="text-center mt-4">Already have an account? <a href="/" id="login-link">Log in</a></p>
+            </div>
+        </div>
+    </div>
+   
+   
+</body>
+</html>

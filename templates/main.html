@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard</title>
+  
+  <style>body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .header {
+    background-color: #f0f0f0;
+    padding: 20px;
+  }
+  
+  .header h1 {
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .sidebar {
+    width: 120px;
+    float: left;
+    padding: 20px;
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .sidebar li {
+    background-color: #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .sidebar li a {
+    color: #000;
+    text-decoration: none;
+  }
+  
+  .main {
+    margin-left: 120px;
+    padding: 20px;
+  }
+  
+  .main h2 {
+    font-size: 20px;
+    margin: 0;
+  }
+  table {
+    border-collapse: collapse;
+    width: auto;
+  }
+  
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: lightgray;
+  }
+  .my-list .hidden-text {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    background:#e3dada;
+  }
+  .delete-btn {
+    display: inline-block;
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  
+  .delete-btn:hover {
+    background-color: #cc0000;
+  }
+
+  .edit-btn {
+    display: inline-block;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  
+  .edit-btn:hover {
+    background-color: #2980b9;
+  }
+
+  .add-btn {
+    display: inline-block;
+    background-color: #27ae60;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  
+  .add-btn:hover {
+    background-color: #219d54;
+  }
+
+  
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 id ="UIN">Admin: 
+        {% if name %}
+        {{name}}
+        {% endif %}
+      </h1>
+    </div>
+    <div class="sidebar">
+      <ul class="my-list">
+        
+        <li onmouseover="showText(2)" onmouseout="hideText(2)" ><a href="/admin" >Home</a></li> <div class="hidden-text-container"><span class="hidden-text" id="hidden-text-2"> create update delete view user data</span></div>
+       
+        <li onmouseover="showText(5)" onmouseout="hideText(5)" ><a href="/Transition" >Transactions</a></li> <div class="hidden-text-container"><span class="hidden-text" id="hidden-text-5"> view users transition</span></div>
+        <li onmouseover="showText(6)" onmouseout="hideText(6)" ><a href="/Network" >White List</a></li> <div class="hidden-text-container"><span class="hidden-text" id="hidden-text-6"> add or remove IP from white list</span></div>
+        
+        <li><a href="/logOut">logout</a></li>
+      </ul>
+    </div>
+    {% block content %}
+    <div class="main">
+      
+      
+
+  
+    </div>
+    {% endblock content %}
+  </div>
+</body>
+<script>
+
+  function showText(id) {
+    var text = document.querySelector('#hidden-text-' + id);
+    text.style.opacity = 1;
+  }
+  
+  function hideText(id) {
+    var text = document.querySelector('#hidden-text-' + id);
+    text.style.opacity = 0;
+  }
+
+  function deleteMsg(){
+    document.getElementById('msg').remove();
+  }
+  
+</script>
+</html>

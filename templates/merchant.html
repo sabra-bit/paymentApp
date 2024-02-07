@@ -1,0 +1,99 @@
+{% extends 'app.html' %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+            <center id ="msg" style=" padding-top: 25px;" >     
+    <button class="add-btn" onclick="deleteMsg()"> {{message}} <i class="fa fa-check"></i></button>
+            </center> 
+{% endfor %} 
+
+<div class="container mt-6">
+    <br>
+    <div class="row">
+        <div class="col-md-7 offset-md-3">
+            <div id="accordion">
+            <div class="card-header" id="headingOne">
+            <h1 class="btn btn-link text-center mb-4" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Merchant Home</h1>
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <p class="lead text-center">Here you can create bill.</p>
+            <div class="card">
+                <div class="card-header">
+                    <center><h5 class="card-title">{{ name }}</h5></center>
+                </div>
+                <div class="card-body">
+                   
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">LE</span>
+                        </div>
+                        <input type="text" id = "money" name = "money" class="form-control" aria-label="Amount (to the nearest LE)" onkeyup="if(this.value<0){this.value= this.value * -1}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick = "CreateQR('{{email}}')">Create</button>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="text-center">
+                        <center><img id="qrcode" src="..." class="rounded" alt="QR"></center>
+                      </div>
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+</div>
+<script type="text/javascript" src="{{ url_for('static',filename ='qrcode.min.js') }}"></script>
+
+<script>
+    
+
+    function CreateQR(data){
+      var money = document.getElementById("money").value;
+      if (money != ""){
+      var parentElement = document.getElementById("qrcode");
+      let currentDate = new Date();
+      let currentHour = currentDate.getHours();
+      let currentMinute = currentDate.getMinutes();
+      let currentSecond = currentDate.getSeconds();
+
+      
+      var qrdata = money+"-"+data +"-"+currentHour + ":" + currentMinute + ":" + currentSecond;
+      parentElement.innerHTML = '';
+      var qrcode = new QRCode(document.getElementById("qrcode"));
+      let encodedString = btoa(qrdata);
+      //let decodedString = atob(encodedString);
+          qrcode.makeCode(encodedString);
+        
+        }else{
+            Swal.fire("No Valid Value !");
+        }
+
+    }
+
+
+
+
+
+
+
+
+  </script>
+{% endblock content %}
